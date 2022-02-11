@@ -4,7 +4,11 @@ library(pdftools)
 library(miscTools)
 library(parsedate)
 
+#change wd to be out of the folder
+setwd("..")
 #read_csv(url("https://raw.githubusercontent.com/SergioJuanes/covid-dashboard/main/data/spaincovidiaedad.csv"))
+
+#read csv from data folder
 spain_covid_edad <- read_csv("./data/spaincovidiaedad.csv")
 
 number_file <- max(spain_covid_edad$number_file)+1
