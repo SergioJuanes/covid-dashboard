@@ -9,7 +9,7 @@ setwd("..")
 #read_csv(url("https://raw.githubusercontent.com/SergioJuanes/covid-dashboard/main/data/spaincovidiaedad.csv"))
 
 #read csv from data folder
-spain_covid_edad <- read_csv("./data/spaincovidiaedad.csv")
+spain_covid_edad <- read_csv("data/spaincovidiaedad.csv")
 
 number_file <- max(spain_covid_edad$number_file)+1
 pdf_file <- tryCatch(
@@ -61,5 +61,5 @@ if(!is.null(pdf_file)){
   df$CCAA <- as.character(df$CCAA)
   names(df) <- names(spain_covid_edad)
   spain_covid_edad <- rbind(spain_covid_edad, df)
-  write_csv(spain_covid_edad, "./data/spaincovidiaedad.csv")
+  write_csv(spain_covid_edad, "data/spaincovidiaedad.csv")
 }
