@@ -4,7 +4,7 @@ name: R_edad
 # Controls when the action will run.
 on:
   schedule:
-  - cron: '9 12 * * *'
+  - cron: '30 12 * * *'
 
 jobs: 
   autoscrape:
