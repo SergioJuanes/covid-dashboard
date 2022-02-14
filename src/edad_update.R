@@ -5,9 +5,11 @@ library(miscTools)
 library(parsedate)
 
 #change wd to be out of the folder
-setwd("..")
+#setwd("")
+#getwd()
+#list.files()
 #read_csv(url("https://raw.githubusercontent.com/SergioJuanes/covid-dashboard/main/data/spaincovidiaedad.csv"))
-spain_covid_edad <- read_csv("/data/spaincovidiaedad.csv")
+spain_covid_edad <- read_csv("./data/spaincovidiaedad.csv")
 
 number_file <- max(spain_covid_edad$number_file)+1
 pdf_file <- tryCatch(
