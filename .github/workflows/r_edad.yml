@@ -3,8 +3,8 @@ name: R_edad
 
 # Controls when the action will run.
 on:
-  push:
-    branches: main
+  schedule:
+    - cron: '30 22 * * *'
 
 jobs: 
   autoscrape:
