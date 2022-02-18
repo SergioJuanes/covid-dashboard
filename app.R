@@ -1,13 +1,31 @@
 library(shiny)
+library(shinythemes)
 
 #CSS style defined
-css <- '.nav-tabs>li>a {
-  font-family: "Lucida Sans", sans-serif;
-  color: green;
-}'
+css <- ''
+
+#Functions to load the data
+data_url_server <- "https://raw.githubusercontent.com/SergioJuanes/coviddataspain/main/data/"
+data_url <- "./data/"
+data_source <- "server"
+
+get_path <- function(file_path) {
+  if (data_source == "server") {
+    return(url(paste0(data_url_server, file_path)))
+  } else {
+    return(paste0(data_url, file_path))
+  }
+}
+
+#Load the data from github
+##Data from spain about cases, death and comulative incidence
+data.spain <- read.csv(get_path("spain_covid_dataset.csv"), stringsAsFactors = FALSE, encoding = "UTF-8")
+data.spain$Comunidad <- as.character(data.spain$Comunidad)
+data.spain$Fecha <- as.Date(data.spain$Fecha, format = "%Y-%m-%d")
+
 
 #Every page separetly
-plot_page <- tabPanel("Plot", 
+plot_page <- tabPanel("Plot",
                       h5("TextPlot")
                       )
 
@@ -22,6 +40,7 @@ table_page <- tabPanel("Table",
 # Define UI for random distribution app ----
 ui <- shinyUI(
   fluidPage(
+  theme = shinytheme("flatly"),
   tags$head(tags$style(HTML(css))),
   
   # App title ----
