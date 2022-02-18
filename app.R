@@ -24,15 +24,15 @@ get_path <- function(file_path) {
 
 #Load the data from github
 ##Data from spain about cases, death and comulative incidence
-data.spain <- read.csv(get_path("spain_covid_dataset.csv"), stringsAsFactors = FALSE, encoding = "UTF-8")
+data.spain <- read_csv(get_path("spain_covid_dataset.csv"))
 data.spain$Comunidad <- as.character(data.spain$Comunidad)
 data.spain$Fecha <- as.Date(data.spain$Fecha, format="%Y-%m-%d")
 
 ##Data from the ucis of Spain
-data.uci.spain <- read.csv(get_path("ucispain.csv"), stringsAsFactors = FALSE, encoding = "UTF-8")
+data.uci.spain <- read_csv(get_path("ucispain.csv"))
 
 ##Vaccunation data
-data.spain.vac <- read.csv(get_path("vacspain.csv"), stringsAsFactors = FALSE)
+data.spain.vac <- read_csv(get_path("vacspain.csv"))
 
 ##Spain map
 spain.map <- geojson_read("https://raw.githubusercontent.com/SergioJuanes/coviddataspain/main/data/simple_spain.geojson")
