@@ -172,7 +172,7 @@ server <- function(input, output) {
       titulo <- paste0("Porcentaje de camas ocupadas en ", input$hcClickedspain)
       data <- data %>% dplyr::filter(CCAA == input$hcClickedspain)
     } else {
-      titulo <- "Porcentaje de camas ocupadas en"
+      titulo <- "Porcentaje de camas ocupadas en España"
       data <- data %>% dplyr::filter(CCAA == "España")
     }
     col_stops <- data.frame(
