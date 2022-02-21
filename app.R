@@ -123,7 +123,7 @@ server <- function(input, output) {
       hc_title(text = "Incidencia Acumulada a 14 días") %>%
       hc_credits(enabled = TRUE, text = 'Fuente: Ministerio de Sanidad', href = 'https://www.mscbs.gob.es/',  target = '_blank') %>%
       hc_tooltip(headerFormat="<b>{point.point.Comunidad}</b><br>",
-                 pointFormat="Incidencia acumulada: <b>{point.value}*</b> <br> Número de casos: <b>{point.Casos}</b> <br> Porcentaje de casos: <b>{point.tasacasos}</b>%** <br> Número de fallecidos: <b>{point.Fallecidos}</b> <br> <br> Porcentaje de fallecidos: <b>{point.tasamuertos}</b>%**") %>%
+                 pointFormat="Incidencia acumulada: <b>{point.value}*</b> <br> Número de casos: <b>{point.Casos}</b> <br> Porcentaje de casos: <b>{point.tasacasos}</b>%** <br> Número de fallecidos: <b>{point.Fallecidos}</b> <br> Porcentaje de fallecidos: <b>{point.tasamuertos}</b>%**") %>%
       hc_plotOptions(map = list(states = list(hover = list(color = "#00FFAA"))), series = list(stacking = FALSE, events = list(click = myClickFunc), cursor = "pointer"))
     hc_colorAxis(mapa, minColor = "#CC99FF", maxColor = "#6400C7")
     hc_colorAxis(mapa, min = 0, max = round(max(na.omit(data)$IA14)+50, -2), minColor = "#00CCFF", maxColor = "#0F00FF")  
