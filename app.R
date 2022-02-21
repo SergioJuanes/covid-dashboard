@@ -65,8 +65,7 @@ general_page <- tabPanel("General",
                                  #         highchartOutput("highcharthopitalspain", width = "100%", height = "220px") %>% withSpinner(type = 6, color = "#000CCC"),
                                  #  )
                                  #)
-                                 amChartsOutput("amchartucis", width="100%", height="150px") %>% withSpinner(type = 6, color = "#000CCC"),
-                                 amChartsOutput("amcharthosp", width="100%", height="150px") %>% withSpinner(type = 6, color = "#000CCC"),
+                                 highchartOutput("highchartocupacioneshospital", width="100%", height="200px") %>% withSpinner(type = 6, color = "#000CCC")
                           
                                  
                           ),
@@ -166,45 +165,14 @@ server <- function(input, output) {
   })
   
   
-  output$amchartucis <- renderAmCharts({
+  output$highchartocupacioneshospital <- renderHighchart({
     data <- data.uci.spain %>% dplyr::filter(fecha == max(data.uci.spain$fecha))
     fecha <- unique(data$fecha)
     if(!is.null(input$hcClickedspain)){
-      titulo <- paste0("Porcentaje de camas UCI ocupadas en ", input$hcClickedspain)
+      titulo <- paste0("Porcentaje de camas ocupadas en ", input$hcClickedspain)
       data <- data %>% dplyr::filter(CCAA == input$hcClickedspain)
     } else {
-      titulo <- "Porcentaje de camas UCI ocupadas en España"
-      data <- data %>% dplyr::filter(CCAA == "España")
-    }
-    
-    amBullet(value = data$PerCamasUCI, steps = FALSE, limit = 20, val_color = "blue", rates=data.frame(name="Hola", min=0, max=100, color = "white")) %>% 
-      amOptions( main = titulo)
-  })
-  
-  output$amcharthosp <- renderAmCharts({
-    data <- data.uci.spain %>% dplyr::filter(fecha == max(data.uci.spain$fecha))
-    fecha <- unique(data$fecha)
-    if(!is.null(input$hcClickedspain)){
-      titulo <- paste0("Porcentaje de camas de hospital ocupadas en ", input$hcClickedspain)
-      data <- data %>% dplyr::filter(CCAA == input$hcClickedspain)
-    } else {
-      titulo <- "Porcentaje de camas de hospital ocupadas en España"
-      data <- data %>% dplyr::filter(CCAA == "España")
-    }
-    
-    amBullet(value = data$PercCamasCovid, steps = FALSE, limit = 20, val_color = "blue", rates=data.frame(name="Hola", min=0, max=100, color = "white")) %>% 
-      amOptions( main = titulo)
-  })
-  
-  
-  output$highchartucispain <- renderHighchart({
-    data <- data.uci.spain %>% dplyr::filter(fecha == max(data.uci.spain$fecha))
-    fecha <- unique(data$fecha)
-    if(!is.null(input$hcClickedspain)){
-      titulo <- paste0("Situación en las UCIS en ", input$hcClickedspain)
-      data <- data %>% dplyr::filter(CCAA == input$hcClickedspain)
-    } else {
-      titulo <- "Situación en las UCIS en España"
+      titulo <- "Porcentaje de camas ocupadas en"
       data <- data %>% dplyr::filter(CCAA == "España")
     }
     col_stops <- data.frame(
@@ -213,91 +181,49 @@ server <- function(input, output) {
       stringsAsFactors = FALSE
     )
     
-    highchart() %>%
-      hc_chart(type = "solidgauge") %>%
-      hc_pane(
-        startAngle = -90,
-        endAngle = 90,
-        center = list('50%', '70%'),
-        size = '100%',
-        background = list(
-          outerRadius = '100%',
-          innerRadius = '60%',
-          shape = "arc"
-        )
-      ) %>%
-      hc_tooltip(enabled = FALSE) %>% 
-      hc_yAxis(
-        stops = list_parse2(col_stops),
-        lineWidth = 0,
-        minorTickWidth = 0,
-        tickAmount = 2,
-        min = 0,
-        max = 100,
-        labels = list(enabled = FALSE)
-      ) %>%
-      hc_add_series(
-        data = data$PerCamasUCI,
-        dataLabels = list(
-          y = -40,
-          borderWidth = 0,
-          useHTML = TRUE,
-          format = paste('<p style="font-size:22px;text-align:center;margin-bottom:0px;"> {point.y}% </p><p style="font-size:10px;margin-top:0px;margin-bottom:-10px">Camas UCI ocupadas</p>')#<p style="text-align:center;font-size:10px;margin-top:0px">', fecha, '</p>')
-        )
-      ) %>% 
-      hc_size(height = 300)
-  })
-  
-  output$highcharthopitalspain <- renderHighchart({
-    data <- data.uci.spain %>% dplyr::filter(fecha == max(data.uci.spain$fecha))
-    fecha <- unique(data$fecha)
-    if(!is.null(input$hcClickedspain)){
-      titulo <- paste0("Situación en las UCIS en ", input$hcClickedspain)
-      data <- data %>% dplyr::filter(CCAA == input$hcClickedspain)
-    } else {
-      titulo <- "Situación en las UCIS en España"
-      data <- data %>% dplyr::filter(CCAA == "España")
-    }
-    col_stops <- data.frame(
-      q = c(0, 0.4, 0.7, 0.9),
-      c = c('#55FF33', '#A3DF0D', '#DDDF0D', '#DF5353'),
-      stringsAsFactors = FALSE
+    df <- data.frame(
+      y = c(data$PercCamasCovid, data$PerCamasUCI),
+      target = c(20,20),
+      nombre = c("Hospital", "UCI")
     )
     
-    highchart() %>%
-      hc_chart(type = "solidgauge") %>%
-      hc_pane(
-        startAngle = -90,
-        endAngle = 90,
-        center = list('50%', '70%'),
-        size = '100%',
-        background = list(
-          outerRadius = '100%',
-          innerRadius = '60%',
-          shape = "arc"
-        )
-      ) %>%
-      hc_tooltip(enabled = FALSE) %>% 
+    hchart(df, "bullet", hcaes(x = nombre, y = y, target = target), color = "blue") %>%
+      hc_chart(inverted = TRUE) %>%
+      hc_title(text = titulo) %>%
       hc_yAxis(
-        stops = list_parse2(col_stops),
-        lineWidth = 0,
-        minorTickWidth = 0,
-        tickAmount = 2,
         min = 0,
         max = 100,
-        labels = list(enabled = FALSE)
+        gridLineWidth = 0
       ) %>%
-      hc_add_series(
-        data = data$PercCamasCovid,
-        dataLabels = list(
-          y = -40,
-          borderWidth = 0,
-          useHTML = TRUE,
-          format = paste('<p style="font-size:22px;text-align:center;margin-bottom:0px;"> {point.y}% </p><p style="font-size:10px;margin-top:0px;margin-bottom:-10px">Camas de hospital ocupadas</p><br>')
-        )
+      hc_xAxis(
+        title = list(enabled = FALSE),
+        gridLineWidth = 15,
+        gridLineColor = "white"
       ) %>% 
-      hc_size(height = 300)
+      hc_yAxis(
+        title = list(enabled = FALSE),
+        labels = list(format = "{value}%"),
+        plotBands = list(
+          list(from = 0, to = 20, color = "lightgreen"),
+          list(from = 20, to = 50, color = "lightyellow"),
+          list(from = 50, to = 100, color = "lightcoral")
+        )
+      ) %>%
+      hc_tooltip(headerFormat="<b>{point.point.nombre}</b><br>",
+                 pointFormat="Porcentaje de capas ocupadas: <b>{point.y}</b> %") %>%
+      
+      hc_plotOptions(
+        series = list(
+          stacking = FALSE,
+          pointPadding = 0.25,
+          pointWidth = 10,
+          borderWidth = 0,
+          targetOptions = list(width = '200%', color = "red")
+        )
+      ) 
   })
+  
+  
 }
 
 shinyApp(ui, server)
