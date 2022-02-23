@@ -5,6 +5,7 @@ library(tidyverse)
 library(geojsonio)
 library(shinycssloaders)
 library(rAmCharts)
+library(xts)
 
 #CSS style defined
 css <- ''
@@ -74,7 +75,8 @@ general_page <- tabPanel("General",
                       )
 
 detallado_page <- tabPanel("Detallado",
-                         h5("TextSummary")
+                         selectInput("ccaa", "Elige la CCAA", choices = unique((data.spain %>% dplyr::arrange(Comunidad))$Comunidad), selected = "España"),
+                         highchartOutput("highchartincidenciadiarios", height = "500px") %>% withSpinner(type = 6, color = "#000CCC")
                          )
 
 table_page <- tabPanel("Table",
@@ -221,6 +223,67 @@ server <- function(input, output) {
           targetOptions = list(width = '200%', color = "red")
         )
       ) 
+  })
+  
+  output$highchartincidenciadiarios <- renderHighchart({
+    
+    data <- data.spain %>% dplyr::filter(Comunidad == input$ccaa)
+    series1 <- xts(x = data$IA14, order.by = as.Date(data$Fecha, format = "%Y-%m-%d"))
+    highchart(type = "stock") %>%
+      hc_add_series(name = "Incidencia acumulada", series1, color = "#1DA3D5") %>%
+      hc_title(text = paste0("Evolución de la incidencia acumulada a 14 días en ", input$ccaa)) %>%
+      hc_xAxis(
+        plotBands = list(
+          list(
+            label = list(
+              text = "Primera Ola"
+            ),
+            from = datetime_to_timestamp(as.Date("2020-03-17", tz = "UTC")),
+            to = datetime_to_timestamp(as.Date("2020-05-31", tz = "UTC")),
+            color = "#FF6960"
+          ),
+          list(
+            label = list(
+              text = "Segunda Ola"
+            ),
+            from = datetime_to_timestamp(as.Date("2020-09-06", tz = "UTC")),
+            to = datetime_to_timestamp(as.Date("2020-12-09", tz = "UTC")),
+            color = "#EE635A"
+          ),
+          list(
+            label = list(
+              text = "Tercera Ola"
+            ),
+            from = datetime_to_timestamp(as.Date("2020-12-09", tz = "UTC")),
+            to = datetime_to_timestamp(as.Date("2021-03-12", tz = "UTC")),
+            color = "#DE5C54"
+          ),
+          list(
+            label = list(
+              text = "Cuarta Ola"
+            ),
+            from = datetime_to_timestamp(as.Date("2021-04-01", tz = "UTC")),
+            to = datetime_to_timestamp(as.Date("2021-05-24", tz = "UTC")),
+            color = "#FF624C"
+          ),
+          list(
+            label = list(
+              text = "Quinta Ola"
+            ),
+            from = datetime_to_timestamp(as.Date("2021-07-23", tz = "UTC")),
+            to = datetime_to_timestamp(as.Date("2021-09-28", tz = "UTC")),
+            color = "#FF6A4C"
+          ),
+          list(
+            label = list(
+              text = "Sexta Ola"
+            ),
+            from = datetime_to_timestamp(as.Date("2021-11-10", tz = "UTC")),
+            to = datetime_to_timestamp(as.Date(Sys.Date(), tz = "UTC")),
+            color = "#FF7A4C"
+          )
+        ))
+  
   })
   
   
