@@ -74,7 +74,7 @@ general_page <- tabPanel("General",
                       )
                       )
 
-detallado_page <- tabPanel("Detallado",
+ia_page <- tabPanel("Incidencia Acumulada",
                          selectInput("ccaa", "Elige la CCAA", choices = unique((data.spain %>% dplyr::arrange(Comunidad))$Comunidad), selected = "España"),
                          highchartOutput("highchartincidenciadiarios", height = "500px") %>% withSpinner(type = 6, color = "#000CCC")
                          )
@@ -96,7 +96,7 @@ ui <- shinyUI(
       # Output: Tabset w/ plot, summary, and table ----
       tabsetPanel(type = "tabs",
                   general_page,
-                  detallado_page,
+                  ia_page,
                   table_page
       )
       
@@ -230,7 +230,7 @@ server <- function(input, output) {
     data <- data.spain %>% dplyr::filter(Comunidad == input$ccaa)
     series1 <- xts(x = data$IA14, order.by = as.Date(data$Fecha, format = "%Y-%m-%d"))
     highchart(type = "stock") %>%
-      hc_add_series(name = "Incidencia acumulada", series1, color = "#1DA3D5") %>%
+      hc_add_series(name = "Incidencia acumulada", series1, color = "#0027FF") %>%
       hc_title(text = paste0("Evolución de la incidencia acumulada a 14 días en ", input$ccaa)) %>%
       hc_xAxis(
         plotBands = list(
