@@ -75,7 +75,7 @@ general_page <- tabPanel("General",
                       )
 
 ia_page <- tabPanel("Incidencia Acumulada",
-                         selectInput("ccaa", "Elige la CCAA", choices = unique((data.spain %>% dplyr::arrange(Comunidad))$Comunidad), selected = "España"),
+                         class = "inline", selectInput("ccaa", "Elige la CCAA", choices = unique((data.spain %>% dplyr::arrange(Comunidad))$Comunidad), selected = "España"),
                          highchartOutput("highchartincidenciadiarios", height = "500px") %>% withSpinner(type = 6, color = "#000CCC")
                          )
 
@@ -114,7 +114,7 @@ server <- function(input, output) {
     data <- left_join(data, pobcoms, by = "Comunidad")
     data$tasamuertos <- round(100*(data$Fallecidos/data$Poblacion), 2)
     data <- data %>% dplyr::filter(Comunidad != "España")
-    
+
     mapa <- highchart(type="map") %>%
       hc_add_series_map(spain.map, 
                         data,
@@ -240,7 +240,7 @@ server <- function(input, output) {
             ),
             from = datetime_to_timestamp(as.Date("2020-03-17", tz = "UTC")),
             to = datetime_to_timestamp(as.Date("2020-05-31", tz = "UTC")),
-            color = "#FF6960"
+            color = "mediumaquamarine"
           ),
           list(
             label = list(
@@ -248,7 +248,7 @@ server <- function(input, output) {
             ),
             from = datetime_to_timestamp(as.Date("2020-09-06", tz = "UTC")),
             to = datetime_to_timestamp(as.Date("2020-12-09", tz = "UTC")),
-            color = "#EE635A"
+            color = "lightseagreen"
           ),
           list(
             label = list(
@@ -256,7 +256,7 @@ server <- function(input, output) {
             ),
             from = datetime_to_timestamp(as.Date("2020-12-09", tz = "UTC")),
             to = datetime_to_timestamp(as.Date("2021-03-12", tz = "UTC")),
-            color = "#DE5C54"
+            color = "mediumaquamarine"
           ),
           list(
             label = list(
@@ -264,15 +264,15 @@ server <- function(input, output) {
             ),
             from = datetime_to_timestamp(as.Date("2021-04-01", tz = "UTC")),
             to = datetime_to_timestamp(as.Date("2021-05-24", tz = "UTC")),
-            color = "#FF624C"
+            color = "lightseagreen"
           ),
           list(
             label = list(
               text = "Quinta Ola"
             ),
-            from = datetime_to_timestamp(as.Date("2021-07-23", tz = "UTC")),
-            to = datetime_to_timestamp(as.Date("2021-09-28", tz = "UTC")),
-            color = "#FF6A4C"
+            from = datetime_to_timestamp(as.Date("2021-06-30", tz = "UTC")),
+            to = datetime_to_timestamp(as.Date("2021-09-13", tz = "UTC")),
+            color = "mediumaquamarine"
           ),
           list(
             label = list(
@@ -280,7 +280,7 @@ server <- function(input, output) {
             ),
             from = datetime_to_timestamp(as.Date("2021-11-10", tz = "UTC")),
             to = datetime_to_timestamp(as.Date(Sys.Date(), tz = "UTC")),
-            color = "#FF7A4C"
+            color = "lightseagreen"
           )
         ))
   
